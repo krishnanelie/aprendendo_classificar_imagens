@@ -3,7 +3,7 @@ library(keras)
 library(caret)
 library(pbapply)
 
-install_keras()
+#install_keras()
 
 car_dir <- "carros/"
 planes_dir <- "avioes/"
@@ -74,14 +74,21 @@ hitory <- model %>%
       epochs = 10,
       batch_size = 32,
       validation_split = 0.2)
-  
- plot(hitory) 
+
+plot(hitory) 
  
- model %>% evaluate(x_test, testLabels,verbose = 1)
+model %>% evaluate(x_test, testLabels,verbose = 1)
  
 pred <- model %>% predict_classes(x_test)
 table(predict = pred, Reais = y_test)
 
 test <- extrair_caracteristicas(teste_dir, width = width, height = height )
 pred_test <- model%>% predict_classes(as.matrix(test))
-pred_test
+
+resultado <- pblapply(pred_test, function (test) {
+  if (test == 0) {
+    return('carro')
+  }
+  return('aviao')
+})
+resultado
