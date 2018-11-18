@@ -1,10 +1,9 @@
-#install.packages("BiocManager")
-#BiocManager::install("EBImage")
-
-library(EBImage)
+library(imager)
 library(keras)
 library(caret)
 library(pbapply)
+
+install_keras()
 
 car_dir <- "carros/"
 planes_dir <- "avioes/"
@@ -13,17 +12,15 @@ teste_dir <- "teste/"
 width <- 30
 height <- 30
 
-
 extrair_caracteristicas <- function(dir_path, width, height){
   img_size <- width * height * 3
   image_name <- list.files(dir_path)
   print(paste("Iniciando Processo",length(image_name),"imagens"))
 
   lista_parametros <- pblapply(image_name, function(imgname) {
-    img <- readImage(file.path(dir_path,imgname))
-    img_resize <- resize(img, w=width, h=height)
-    img_matrix <- as.matrix(img_resize@.Data)
-    img_vector <- as.vector(t(img_matrix))
+    img <- load.image(file.path(dir_path,imgname))
+    img_resize <- resize(img, width, height)
+    img_vector <- as.vector(img_resize)
     
     return(img_vector)
   })
